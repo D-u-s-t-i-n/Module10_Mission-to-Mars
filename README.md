@@ -63,4 +63,25 @@ executable_path = {'executable_path': 'chromedriver.exe'}
 browser = Browser('chrome', **executable_path, headless=False)
 
 
+INSTALLTION
+
+<Spliter>
+pip install splinter
+<Chrome driver>
+https://sites.google.com/a/chromium.org/chromedriver/downloads
+same folder as python script
+<Beautiful Soup>
+pip install bs4
+<MongoDB>
+pip install pymongo
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
+cd c:
+to add data directory to root
+mkdir -p data/db
+
+ADD PATH: in system environemnt variables
+C:\\Program Files\\MongoDB\\Server\\\\bin
+
+mongod in bash to see if install successful
+
 
