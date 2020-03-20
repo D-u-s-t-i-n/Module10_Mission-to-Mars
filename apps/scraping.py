@@ -30,7 +30,32 @@ def scrape_all():
             "facts": mars_facts(),
             "last_modified": dt.now()
             } # Module wsa datetime_now
-    return data
+    HemisphereNames = ['Cerberus', 'Schiaparelli', 'Syrtis Major', 'Valles Marineris' ]
+    DataDictionary = {}
+    for HemiName in HemisphereNames:
+        DataDictionary.update({HemiName.replace(" ", "_"): GetHemiURL(HemiName, browser)})
+    return data, DataDictionary
+
+def GetHemiURL(HemiName, browser):
+    # Visit the hemisphere mars nasa news site
+    print(HemiName)
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url)
+    # Optional delay for loading the page
+    browser.is_element_present_by_css("ul.item_list li.slide", wait_time=1)
+    # Find the button and click that
+    browser.is_element_present_by_text(HemiName + 'Hemisphere Enhanced', wait_time=1)
+    more_info_elem = browser.find_link_by_partial_text(HemiName + ' Hemisphere Enhanced')
+    more_info_elem.click()
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = BeautifulSoup(html, 'html.parser')
+    # Find the original image button and click that
+    # Find the relative image url
+    #img_url_rel = img_soup.select_one('div.content dl dd a').get("href")
+    img_url_rel = img_soup.select_one('div.downloads ul li a').get("href")
+    img_url_rel
+    return img_url_rel
     
     
 def mars_news(browser):
@@ -110,7 +135,7 @@ def mars_facts():
     except BaseException:
         return None
     # Assign columns and set index of dataframe
-    df.columns=['description', 'value', 'Earth']
+    df.columns=['description', 'value']#, 'Earth']
     df.set_index('description', inplace=True)
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html()
@@ -123,7 +148,7 @@ if __name__ == "__main__":
     print("debugA")
     #print(scrape_all())
     print("debugB")
-    #browser.quit()
+    browser.quit()
 
 
 # In[ ]:

@@ -18,14 +18,18 @@ mongo = PyMongo(app)
 @app.route("/")
 def index():
     mars = mongo.db.mars.find_one()
-    return render_template("index.html", mars=mars)
+    marshemi = mongo.db.marshemi.find_one()
+    return render_template("index.html", mars=mars, marshemi=marshemi) # Setting mars variable to mars in html
 
 @app.route("/scrape")
 def scrape():
     print("TestA")
     mars = mongo.db.mars
-    mars_data = scraping.scrape_all()
+    # Add Hemi
+    marshemi = mongo.db.marshemi
+    mars_data, marshemi_data = scraping.scrape_all()
     mars.update({}, mars_data, upsert=True)
+    marshemi.update({}, marshemi_data, upsert=True)
     return "Scraping Successful!"
 
 if __name__ == "__main__":
