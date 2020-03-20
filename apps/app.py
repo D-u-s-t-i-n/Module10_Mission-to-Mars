@@ -18,15 +18,13 @@ mongo = PyMongo(app)
 @app.route("/")
 def index():
     mars = mongo.db.mars.find_one()
-    marshemi = mongo.db.marshemi.find_one()
+    marshemi = mongo.db.marshemi.find_one() # Separate DB for mars images
     return render_template("index.html", mars=mars, marshemi=marshemi) # Setting mars variable to mars in html
 
 @app.route("/scrape")
 def scrape():
-    print("TestA")
     mars = mongo.db.mars
-    # Add Hemi
-    marshemi = mongo.db.marshemi
+    marshemi = mongo.db.marshemi # Add Hemi for challenge
     mars_data, marshemi_data = scraping.scrape_all()
     mars.update({}, mars_data, upsert=True)
     marshemi.update({}, marshemi_data, upsert=True)

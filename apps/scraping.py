@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[19]:
-
 
 # Import Splinter and BeautifulSoup
 from splinter import Browser
@@ -10,18 +8,11 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime as dt
 
-# Set xecutable path and initailize the chrome browser in splinter
-#executable_path = {'executable_path': 'chromedriver'}
-#browser = Browser('chrome', **executable_path)
-
 def scrape_all():
     # Initiate headless driver for deployment
-    print("Debug1")
-#    browser = Browser("chrome", executable_path="chromedriver", headless=True)
     executable_path = {'executable_path': 'chromedriver'}
     browser = Browser('chrome', **executable_path)
 
-    print("Debug2")
     news_title, news_paragraph = mars_news(browser)
     # Run all scraping functions and store results in dictionary
     data = {"news_title": news_title, 
@@ -34,6 +25,7 @@ def scrape_all():
     DataDictionary = {}
     for HemiName in HemisphereNames:
         DataDictionary.update({HemiName.replace(" ", "_"): GetHemiURL(HemiName, browser)})
+    browser.quit()
     return data, DataDictionary
 
 def GetHemiURL(HemiName, browser):
@@ -50,9 +42,6 @@ def GetHemiURL(HemiName, browser):
     # Parse the resulting html with soup
     html = browser.html
     img_soup = BeautifulSoup(html, 'html.parser')
-    # Find the original image button and click that
-    # Find the relative image url
-    #img_url_rel = img_soup.select_one('div.content dl dd a').get("href")
     img_url_rel = img_soup.select_one('div.downloads ul li a').get("href")
     img_url_rel
     return img_url_rel
@@ -60,7 +49,6 @@ def GetHemiURL(HemiName, browser):
     
 def mars_news(browser):
     # Visit the mars nasa news site
-    print("Debug News")
     url = 'https://mars.nasa.gov/news/'
     browser.visit(url)
     # Optional delay for loading the page
@@ -95,11 +83,7 @@ def featured_image(browser):
     # Visit URL
     url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(url)
-    
-    
-    # In[10]:
-    
-    
+        
     # Find and click the full image button
     full_image_elem = browser.find_by_id('full_image')
     full_image_elem.click()
@@ -126,8 +110,6 @@ def featured_image(browser):
     img_url
     return img_url
 
-# In[22]:
-
 def mars_facts():
     try:
         # Use 'read_html' to scrape the facts table into a dataframe
@@ -141,17 +123,9 @@ def mars_facts():
     return df.to_html()
 
 
-# In[23]:
-
 if __name__ == "__main__":
     # If running as script, print scraped data
-    print("debugA")
-    #print(scrape_all())
-    print("debugB")
-    browser.quit()
-
-
-# In[ ]:
+    print(scrape_all())
 
 
 
